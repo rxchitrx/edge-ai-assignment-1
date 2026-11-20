@@ -79,24 +79,24 @@ gap.** Rotate the roles (Builder, Measurer, Skeptic, Scribe) so everyone builds 
 ### Mission 2: A small network, opened up
 - [x] Predict, by hand, the parameters, float32 bytes and MACs of 5 → 32 → 32 → 1.
 - [x] **Code (`train.py`):** normalise the inputs using the training rows only. Compare training with and without normalisation.
-- [ ] Train with hidden widths 4, 8, 16, 32 and 64, with one and two hidden layers (`--hidden 16` or `--hidden 32,32`). Plot validation MAE against parameters.
-- [ ] Compare training MAE with validation MAE for your chosen size. Is it overfitting?
-- [ ] Work out the per-layer table (parameters, bytes, MACs) by hand, then **code (`app/main.py`):** make `/model_info` compute it from the network itself.
-- [ ] Choose your final model and write down the MAE you expect on the company's 400 unseen readings.
+- [x] Train with hidden widths 4, 8, 16, 32 and 64, with one and two hidden layers (`--hidden 16` or `--hidden 32,32`). Plot validation MAE against parameters.
+- [x] Compare training MAE with validation MAE for your chosen size. Is it overfitting?
+- [x] Work out the per-layer table (parameters, bytes, MACs) by hand, then **code (`app/main.py`):** make `/model_info` compute it from the network itself.
+- [x] Choose your final model and write down the MAE you expect on the company's 400 unseen readings.
 
 ### Mission 3: Serve it, and time every stage
-- [ ] Predict the inference time and the laptop-to-Codespace round trip.
-- [ ] **Code (`app/main.py`):** give every input a range, so glitches get HTTP 422. Base the ranges on what a real sensor can report, not on your data's smallest and largest values: a real reading just outside your data must still get an answer. Test three glitches at `/docs`.
-- [ ] **Code (`app/main.py`):** time `normalise`, `inference` and `build` the same way `parse` is timed.
-- [ ] From your **laptop**: `python client/bench.py --url <address> --n 200`. Record the first request, then p50/p95/p99 of the round trip and every stage.
-- [ ] Draw where the time goes in a typical request (server stages + network and framework). Was the LLM right?
-- [ ] Run it again with `--no-keepalive`, and once inside the Codespace against `http://localhost:8000`. Explain both differences.
-- [ ] Time 400 single `/predict` calls against one `/predict_batch` call of 400 rows. Explain the difference.
+- [x] Predict the inference time and the laptop-to-Codespace round trip.
+- [x] **Code (`app/main.py`):** give every input a range, so glitches get HTTP 422. Base the ranges on what a real sensor can report, not on your data's smallest and largest values: a real reading just outside your data must still get an answer. Test three glitches at `/docs`.
+- [x] **Code (`app/main.py`):** time `normalise`, `inference` and `build` the same way `parse` is timed.
+- [x] From your **laptop**: `python client/bench.py --url <address> --n 200`. Record the first request, then p50/p95/p99 of the round trip and every stage.
+- [x] Draw where the time goes in a typical request (server stages + network and framework). Was the LLM right?
+- [x] Run it again with `--no-keepalive`, and once inside the Codespace against `http://localhost:8000`. Explain both differences.
+- [x] Time 400 single `/predict` calls against one `/predict_batch` call of 400 rows. Explain the difference.
 
 ### Mission 4: Would it fit inside the doorbell?
 ESP32-S3: about 512 KB SRAM (roughly 300 KB free for your program), 8 MB PSRAM, 16 MB flash.
 - [ ] For your model: bytes for weights and biases as float32 and int8, and the largest activation memory needed at once.
-- [ ] **Code (`app/main.py`):** add `total_bytes_int8`, `fits_300kb_sram_f32` and `fits_300kb_sram_int8` to `/model_info`.
+- [x] **Code (`app/main.py`):** add `total_bytes_int8`, `fits_300kb_sram_f32` and `fits_300kb_sram_int8` to `/model_info`.
 - [ ] Use the same function to fill in the table for 5 → w → w → 1 at w = 32, 128, 256, 512 and 2048: parameters, float32 size, int8 size, fits in 300 KB SRAM (float32 and int8), fits in 8 MB PSRAM, MACs.
 - [ ] Find the exact width where the weights stop fitting in 300 KB, at float32 and at int8.
 - [ ] Estimate one prediction's time on the board. State the speed you assume and where it came from.

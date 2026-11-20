@@ -68,10 +68,14 @@ for ep in range(a.epochs):
         opt.zero_grad(); loss.backward(); opt.step()
     if ep % 300 == 0 or ep == a.epochs - 1:
         with torch.no_grad():
-            print(f"  epoch {ep:4d}  val MAE {mae(net(Xvt).numpy(), yv):.2f} days")
+            print(f"  epoch {ep:4d}  train MAE {mae(net(Xt).numpy(), y):.2f}  "
+                  f"val MAE {mae(net(Xvt).numpy(), yv):.2f} days")
 with torch.no_grad():
+    # Mission 2 overfitting check: error on rows the network learned from vs rows it never saw.
+    train_mae = mae(net(Xt).numpy(), y)
     val_mae = mae(net(Xvt).numpy(), yv)
-print(f"network {hidden}:            {val_mae:.2f} days")
+print(f"network {hidden}:            train {train_mae:.2f} days, val {val_mae:.2f} days "
+      f"(gap {val_mae - train_mae:+.2f})")
 
 os.makedirs("model_runs", exist_ok=True)
 widths = ",".join(str(width) for width in hidden)
@@ -79,5 +83,6 @@ run_dir = mkdtemp(prefix=f"team_{a.team:02d}_hidden_{widths}_", dir="model_runs"
 torch.save(net.state_dict(), os.path.join(run_dir, "model.pt"))
 with open(os.path.join(run_dir, "config.json"), "w") as config_file:
     json.dump(dict(team=a.team, hidden=list(hidden), mu=mu.tolist(), sd=sd.tolist(),
-                   features=FEATURES, val_mae=round(val_mae, 2)), config_file, indent=2)
+                   features=FEATURES, train_mae=round(train_mae, 2), val_mae=round(val_mae, 2)),
+              config_file, indent=2)
 print(f"Saved model and config to {run_dir}")
